@@ -115,4 +115,29 @@ public class Generator : MonoBehaviour {
 			}
 		}
 	}
+
+	public void RegenerateMap(){
+		Initialize ();
+		GetData (HeightMap, ref HeightData);
+		LoadTiles ();
+
+		HeightMapRenderer.materials[0].mainTexture = TextureGenerator.GetTexture (Width, Height, Tiles);
+	}
+
+	public void SaveMapButton(){
+		Texture2D tex2D = (Texture2D)HeightMapRenderer.materials[0].mainTexture;
+		SaveImageFromTexture(tex2D);
+	}
+
+	private void SaveImageFromTexture(Texture2D texture)
+    {
+        byte[] bytes = texture.EncodeToPNG();
+        var dirPath = Application.dataPath + "/RenderOutput";
+            if (!System.IO.Directory.Exists(dirPath))
+            {
+                System.IO.Directory.CreateDirectory(dirPath);
+            }   
+        System.IO.File.WriteAllBytes(dirPath + "/R_" + Random.Range(0, 100000) + ".png", bytes);
+        Debug.Log(bytes.Length / 1024 + "Kb was saved as: " + dirPath);
+    }
 }

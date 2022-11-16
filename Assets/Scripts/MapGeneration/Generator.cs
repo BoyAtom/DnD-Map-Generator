@@ -1,9 +1,12 @@
 using UnityEngine;
 using AccidentalNoise;
+using System.Threading;
+using System;
 
 public class Generator : MonoBehaviour {
 
 	// Adjustable variables for Unity Inspector
+	public GameObject Planet;
 	public int Width = 512;
 	public int Height = 512;
 	public int TerrainOctaves = 6;
@@ -31,43 +34,52 @@ public class Generator : MonoBehaviour {
 		GetData (HeightMap, ref HeightData);
 		LoadTiles ();
 
-		HeightMapRenderer.materials[0].mainTexture = TextureGenerator.GetTexture (Width, Height, Tiles);
+		Texture2D texture2D = TextureGenerator.GetTexture (Width, Height, Tiles);
+		Planet.GetComponent<MeshRenderer>().material.SetTexture("_PlanetTexture", texture2D);
+		HeightMapRenderer.materials[0].mainTexture = texture2D;
 	}
 
 	private void Initialize()
 	{
-		// Initialize the HeightMap Generator
+        // Initialize the HeightMap Generator
+        System.Random rnd = new System.Random();
 		HeightMap = new ImplicitFractal (FractalType.MULTI, 
 		                               BasisType.SIMPLEX, 
 		                               InterpolationType.QUINTIC, 
 		                               TerrainOctaves, 
 		                               TerrainFrequency, 
-		                               UnityEngine.Random.Range (0, int.MaxValue));
+		                               rnd.Next(0, int.MaxValue));
 	}
 	
 	// Extract data from a noise module
 	private void GetData(ImplicitModuleBase module, ref MapData mapData)
 	{
 		mapData = new MapData (Width, Height);
-
-		// loop through each x,y point - get height value
-		for (var x = 0; x < Width; x++)
-		{
-			for (var y = 0; y < Height; y++)
-			{
-				//Sample the noise at smaller intervals
-				float x1 = x / (float)Width;
-				float y1 = y / (float)Height;
-
-				float value = (float)HeightMap.Get (x1, y1);
-
-				//keep track of the max and min values found
-				if (value > mapData.Max) mapData.Max = value;
-				if (value < mapData.Min) mapData.Min = value;
-
-				mapData.Data[x,y] = value;
+ 
+		for (var x = 0; x < Width; x++) {
+			for (var y = 0; y < Height; y++) {
+	
+				float x1 = 0, x2 = 2;
+				float y1 = 0, y2 = 2;               
+				float dx = x2 - x1;
+				float dy = y2 - y1;
+	
+				float s = x / (float)Width;
+				float t = y / (float)Height;
+			
+				float nx = x1 + Mathf.Cos (s*2*Mathf.PI) * dx/(2*Mathf.PI);
+				float ny = y1 + Mathf.Cos (t*2*Mathf.PI) * dy/(2*Mathf.PI);
+				float nz = x1 + Mathf.Sin (s*2*Mathf.PI) * dx/(2*Mathf.PI);
+				float nw = y1 + Mathf.Sin (t*2*Mathf.PI) * dy/(2*Mathf.PI);
+			
+				float heightValue = (float)HeightMap.Get (nx, ny, nz, nw);
+				
+				if (heightValue > mapData.Max) mapData.Max = heightValue;
+				if (heightValue < mapData.Min) mapData.Min = heightValue;
+	
+				mapData.Data[x,y] = heightValue;
 			}
-		}	
+		}
 	}
 
 	// Build a Tile array from our data
@@ -113,16 +125,24 @@ public class Generator : MonoBehaviour {
 				
 				Tiles[x,y] = t;
 			}
-		}
+        }
 	}
+
+	public void UpdateMap()
+	{
+        Initialize();
+        GetData(HeightMap, ref HeightData);
+        LoadTiles();
+    }
 
 	public void RegenerateMap(){
-		Initialize ();
-		GetData (HeightMap, ref HeightData);
-		LoadTiles ();
+        Thread thrd = new Thread(new ThreadStart(UpdateMap));
+		thrd.Start();
 
-		HeightMapRenderer.materials[0].mainTexture = TextureGenerator.GetTexture (Width, Height, Tiles);
-	}
+        Texture2D texture2D = TextureGenerator.GetTexture(Width, Height, Tiles);
+        Planet.GetComponent<MeshRenderer>().material.SetTexture("_PlanetTexture", texture2D);
+        HeightMapRenderer.materials[0].mainTexture = texture2D;
+    }
 
 	public void SaveMapButton(){
 		Texture2D tex2D = (Texture2D)HeightMapRenderer.materials[0].mainTexture;
@@ -137,7 +157,7 @@ public class Generator : MonoBehaviour {
             {
                 System.IO.Directory.CreateDirectory(dirPath);
             }   
-        System.IO.File.WriteAllBytes(dirPath + "/R_" + Random.Range(0, 100000) + ".png", bytes);
+        System.IO.File.WriteAllBytes(dirPath + "/R_" + UnityEngine.Random.Range(0, 100000) + ".png", bytes);
         Debug.Log(bytes.Length / 1024 + "Kb was saved as: " + dirPath);
     }
 }

@@ -2,6 +2,8 @@ using UnityEngine;
 using AccidentalNoise;
 using System.Threading;
 using System;
+using System.Collections;
+using UnityEngine.UI;
 
 public class Generator : MonoBehaviour {
 
@@ -18,6 +20,8 @@ public class Generator : MonoBehaviour {
 	public float Forest = 0.8f;
 	public float Rock = 0.9f;
 
+	public Button SaveButton;
+
 	// private variables
 	ImplicitFractal HeightMap;
 	MapData HeightData;
@@ -29,14 +33,6 @@ public class Generator : MonoBehaviour {
 	void Start()
 	{
 		HeightMapRenderer = transform.Find ("HeightTexture").GetComponent<MeshRenderer> ();
-
-		Initialize ();
-		GetData (HeightMap, ref HeightData);
-		LoadTiles ();
-
-		Texture2D texture2D = TextureGenerator.GetTexture (Width, Height, Tiles);
-		Planet.GetComponent<MeshRenderer>().material.SetTexture("_PlanetTexture", texture2D);
-		HeightMapRenderer.materials[0].mainTexture = texture2D;
 	}
 
 	private void Initialize()
@@ -135,13 +131,21 @@ public class Generator : MonoBehaviour {
         LoadTiles();
     }
 
-	public void RegenerateMap(){
-        Thread thrd = new Thread(new ThreadStart(UpdateMap));
-		thrd.Start();
-
+    IEnumerator SetMap()
+	{
+		yield return new WaitForSeconds(20);
         Texture2D texture2D = TextureGenerator.GetTexture(Width, Height, Tiles);
         Planet.GetComponent<MeshRenderer>().material.SetTexture("_PlanetTexture", texture2D);
         HeightMapRenderer.materials[0].mainTexture = texture2D;
+
+        SaveButton.enabled = true;
+    }
+
+	public void RegenerateMap(){
+        SaveButton.enabled = false;
+        Thread thrd = new Thread(new ThreadStart(UpdateMap));
+		thrd.Start();
+		StartCoroutine(SetMap());
     }
 
 	public void SaveMapButton(){

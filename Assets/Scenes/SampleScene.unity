@@ -904,12 +904,13 @@ MonoBehaviour:
   Height: 1024
   TerrainOctaves: 6
   TerrainFrequency: 1.25
-  DeepWater: 0.2
+  DeepWater: 0.3
   ShallowWater: 0.4
   Sand: 0.5
   Grass: 0.7
   Forest: 0.8
   Rock: 0.9
+  SaveButton: {fileID: 360466212}
 --- !u!4 &1288015007
 Transform:
   m_ObjectHideFlags: 0

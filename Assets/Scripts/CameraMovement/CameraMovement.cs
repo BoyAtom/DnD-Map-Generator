@@ -8,7 +8,7 @@ public class CameraMovement : MonoBehaviour {
     private static readonly float ZoomSpeedMouse = 0.5f;
     
     private static readonly float[] BoundsX = new float[]{-10f, 10f};
-    private static readonly float[] BoundsY = new float[]{-1f, 1f};
+    private static readonly float[] BoundsY = new float[]{-5f, 5f};
     private static readonly float[] ZoomBounds = new float[]{10f, 85f};
     
     private Camera cam;

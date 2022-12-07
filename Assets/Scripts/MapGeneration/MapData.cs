@@ -1,4 +1,4 @@
-public class MapData {
+﻿public class MapData {
 
 	public float[,] Data;
 	public float Min { get; set; }

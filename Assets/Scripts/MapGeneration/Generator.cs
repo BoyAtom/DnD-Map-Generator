@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using UnityEngine.UI;
 
 public abstract class Generator : MonoBehaviour {
 
@@ -13,6 +14,9 @@ public abstract class Generator : MonoBehaviour {
 	[Header("Objects")]
 	[SerializeField]
 	protected GameObject Planet;
+	[SerializeField]
+	protected GameObject PercentsField;
+
 	[Header("Generator Values")]
 	[SerializeField]
 	protected int Width = 512;
@@ -116,6 +120,7 @@ public abstract class Generator : MonoBehaviour {
 
 	public System.Random random;
 	protected bool IsGenerated = false;
+	protected float Percents = 0f;
 
 	void Start()
 	{
@@ -195,8 +200,13 @@ public abstract class Generator : MonoBehaviour {
 
 	void Update()
 	{
+		if (Percents > 0)
+		{
+			PercentsField.GetComponent<Image>().fillAmount = Percents;
+		}
+
         // Refresh with inspector values
-		if (Input.GetKeyDown (KeyCode.F5)) {
+        if (Input.GetKeyDown (KeyCode.F5)) {
 
 			ReloadMap();
 		}
@@ -204,6 +214,8 @@ public abstract class Generator : MonoBehaviour {
         if (IsGenerated)
         {
             IsGenerated = !IsGenerated;
+			Percents = 0f;
+            PercentsField.GetComponent<Image>().fillAmount = Percents;
             SetMaps();
         }
     }

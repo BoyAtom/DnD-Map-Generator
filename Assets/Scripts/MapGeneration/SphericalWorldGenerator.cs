@@ -114,7 +114,8 @@ public class SphericalWorldGenerator : Generator {
 				MoistureData.Data [x, y] = moistureValue;
 
                 curLon += xDelta;
-			}			
+			}
+			Percents = Percents + (1 / (float)Width);
 			curLat += yDelta;
 		}
 	}

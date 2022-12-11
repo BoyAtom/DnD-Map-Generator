@@ -75,9 +75,9 @@ public class CameraMovement : MonoBehaviour {
     void HandleMouse() {
         // On mouse down, capture it's position.
         // Otherwise, if the mouse is still down, pan the camera.
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(2)) {
             lastPanPosition = Input.mousePosition;
-        } else if (Input.GetMouseButton(0)) {
+        } else if (Input.GetMouseButton(2)) {
             PanCamera(Input.mousePosition);
         }
     

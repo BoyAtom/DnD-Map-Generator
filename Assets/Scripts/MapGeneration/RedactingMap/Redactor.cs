@@ -1,21 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class Redactor : MonoBehaviour
 {
-    public void SetHeight()
-    {
+    public MeshRenderer mapTexture;
 
+    public void Update()
+    {
+        if (Input.GetMouseButton(0)) 
+        {
+            Texture2D texture = (Texture2D)mapTexture.materials[0].mainTexture;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            Debug.Log(Physics.Raycast(ray, out hit, 100f));
+            if (Physics.Raycast(ray, out hit, 100f))
+            {
+                Vector2 pixelUV = hit.textureCoord;
+                pixelUV.x *= texture.width;
+                pixelUV.y *= texture.height;
+                Vector2 position = new Vector2(pixelUV.x, pixelUV.y);
+
+                Debug.Log(position.x + ", " + position.y);
+                texture.SetPixel((int)position.x, (int)position.y, Color.red);
+                texture.Apply();
+            }
+            /*
+            Vector2 pixelUV = hit.textureCoord;
+            Debug.Log(hit.textureCoord);
+            pixelUV.x *= texture.width;
+            pixelUV.y *= texture.height;
+
+            Debug.Log(pixelUV.x +" / "+ pixelUV.y);
+            texture.SetPixel((int)pixelUV.x, (int)pixelUV.y, Color.red);
+            texture.Apply();
+
+            if (hit.collider != null)
+            {
+                Debug.Log(hit.transform.name);
+                Vector2 pixelUV = hit.textureCoord;
+                pixelUV.x *= tex.width;
+                pixelUV.y *= tex.height;
+                Vector2 position = new Vector2(pixelUV.x, pixelUV.y);
+                tex.SetPixel((int)pixelUV.x, (int)pixelUV.y, Color.red);
+                tex.Apply();
+            }
+            */
+        }
     }
 
-    public void Testing_SetHeight()
+    public static void SetPoint(Texture2D texture, int x, int y, Color color)
     {
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-        if (hit.collider != null)
-        {
-            Debug.Log("You clicked on redactor panel!");
-        }
+        texture.SetPixel(x, y, color);
     }
 }

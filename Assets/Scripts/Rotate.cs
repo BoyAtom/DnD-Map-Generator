@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Rotate : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
+    [SerializeField]
+    private float rotSpeed = 20;
 
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
+    void OnMouseDrag()
     {
-        transform.Rotate(0, 0.1f, 0);
+        float rotX = Input.GetAxis("Mouse X") * rotSpeed * Mathf.Deg2Rad;
+        float rotY = Input.GetAxis("Mouse Y") * rotSpeed * Mathf.Deg2Rad;
+
+        transform.Rotate(Vector3.up, -rotX);
+        transform.Rotate(Vector3.right, -rotY);
     }
 }

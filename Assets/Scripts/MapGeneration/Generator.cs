@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System;
 using UnityEngine.UI;
+using TMPro;
 
 public abstract class Generator : MonoBehaviour {
 
@@ -15,7 +16,9 @@ public abstract class Generator : MonoBehaviour {
 	[SerializeField]
 	protected GameObject Planet;
 	[SerializeField]
-	protected GameObject PercentsField;
+	protected TMP_InputField MapSizeField;
+    [SerializeField]
+    protected GameObject PercentsField;
 
 	[Header("Generator Values")]
 	[SerializeField]
@@ -222,7 +225,7 @@ public abstract class Generator : MonoBehaviour {
 
 	public void ReloadMap()
 	{
-        Seed = UnityEngine.Random.Range(0, int.MaxValue);
+		Seed = UnityEngine.Random.Range(0, int.MaxValue);
         Thread updateThread = new Thread(new ThreadStart(UpdateMap));
         updateThread.Start();
     }
@@ -238,6 +241,14 @@ public abstract class Generator : MonoBehaviour {
         Texture2D tex2D = (Texture2D)BiomeMapRenderer.materials[0].mainTexture;
         SaveImageFromTexture(tex2D);
     }
+
+    public void SetMapSize()
+	{
+		MapSizeField = FindObjectOfType<TMP_InputField>();
+        int size = int.Parse(MapSizeField.text);
+		Width = size;
+		Height = size;
+	}
 
     private void SaveImageFromTexture(Texture2D texture)
     {

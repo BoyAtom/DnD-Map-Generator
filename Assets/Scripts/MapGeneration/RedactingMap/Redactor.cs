@@ -12,17 +12,23 @@ public class Redactor : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            Debug.Log(Physics.Raycast(ray, out hit, 100f));
-            if (Physics.Raycast(ray, out hit, 100f))
+            try
             {
-                Vector2 pixelUV = hit.textureCoord;
-                pixelUV.x *= texture.width;
-                pixelUV.y *= texture.height;
-                Vector2 position = new Vector2(pixelUV.x, pixelUV.y);
+                if (Physics.Raycast(ray, out hit, 100f))
+                {
+                    Vector2 pixelUV = hit.textureCoord;
+                    pixelUV.x *= texture.width;
+                    pixelUV.y *= texture.height;
+                    Vector2 position = new Vector2(pixelUV.x, pixelUV.y);
 
-                Debug.Log(position.x + ", " + position.y);
-                texture.SetPixel((int)position.x, (int)position.y, Color.red);
-                texture.Apply();
+                    Debug.Log("Drawing: " + (int)position.x + " / " + (int)position.y);
+                    texture.SetPixel((int)position.x, (int)position.y, Color.red);
+                    texture.Apply();
+                }
+            }
+            catch (System.NullReferenceException e)
+            {
+                Debug.Log("Tried to draw on missing texture: "+e.ToString());
             }
             /*
             Vector2 pixelUV = hit.textureCoord;

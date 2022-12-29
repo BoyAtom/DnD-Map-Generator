@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.Tracing;
+using TMPro;
 using UnityEngine;
 
 public class AddNotes : MonoBehaviour
@@ -9,19 +7,44 @@ public class AddNotes : MonoBehaviour
     private MeshRenderer mapTexture;
     [SerializeField]
     private GameObject notePoint;
-    private GameObject[] notePoints;
+    [SerializeField]
+    private GameObject descriptionField;
+    //private GameObject[] notePoints;
+    private Note[] notePoints;
     private int currentPoint = 0;
+
+    public class Note
+    {
+        public GameObject point;
+        public string description;
+
+        public Note()
+        {
+            description = string.Empty;
+        }
+
+        public void SetPoint(GameObject dot)
+        {
+            point = dot;
+        }
+
+        public void SetDescription(string text)
+        {
+            description = text;
+        }
+    }
+
 
     // Start is called before the first frame update
     void Start()
     {
-        notePoints = new GameObject[100];
+        notePoints = new Note[100];
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(KeyCode.N) && transform.gameObject.tag != "Button")
         {
             Texture2D texture = (Texture2D)mapTexture.materials[0].mainTexture;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -40,15 +63,24 @@ public class AddNotes : MonoBehaviour
                 PlaceNotePoint(position);
             }
         }
-        if (Input.GetKeyDown(KeyCode.Delete)) 
+        if (Input.GetKeyDown(KeyCode.Delete) && transform.gameObject.tag != "Button") 
         {
             DestroyPoints();
         }
     }
 
+    public void ShowHideDescriptionField()
+    {
+        gameObject.SetActive(true);
+        TMP_InputField inputField = descriptionField.gameObject.GetComponent<TMP_InputField>();
+        inputField.text = "Leeeroy";
+    }
+
     private void PlaceNotePoint(Vector3 clickCoords)
     {
-        notePoints[currentPoint] = Instantiate(notePoint, clickCoords, new Quaternion());
+        GameObject obj = Instantiate(notePoint, clickCoords, new Quaternion());
+        notePoints[currentPoint] = new Note();
+        notePoints[currentPoint].SetPoint(obj);
         currentPoint = CountPoints();
     }
 
@@ -64,10 +96,10 @@ public class AddNotes : MonoBehaviour
         int counter = 0;
         while (notePoints[counter] != null)
         {
-            Destroy(notePoints[counter].gameObject);
+            Destroy(notePoints[counter].point.gameObject);
             counter += 1;
         }
-        notePoints = new GameObject[100];
+        notePoints = new Note[100];
         currentPoint = 0;
     }
 }

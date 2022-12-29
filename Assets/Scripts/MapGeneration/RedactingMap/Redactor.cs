@@ -6,7 +6,7 @@ public class Redactor : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetMouseButton(0)) 
+        if (Input.GetMouseButton(1)) 
         {
             Texture2D texture = (Texture2D)mapTexture.materials[0].mainTexture;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

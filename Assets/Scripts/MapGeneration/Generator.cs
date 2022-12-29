@@ -244,7 +244,6 @@ public abstract class Generator : MonoBehaviour {
 
     public void SetMapSize()
 	{
-		MapSizeField = FindObjectOfType<TMP_InputField>();
         int size = int.Parse(MapSizeField.text);
 		Width = size;
 		Height = size;

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -7,38 +9,55 @@ public class AddNotes : MonoBehaviour
     private MeshRenderer mapTexture;
     [SerializeField]
     private GameObject notePoint;
-    [SerializeField]
     private GameObject descriptionField;
-    //private GameObject[] notePoints;
-    private Note[] notePoints;
-    private int currentPoint = 0;
+    private TMP_InputField inputField;
 
+    public List<GameObject> notePoints;
+    //private GameObject[] notePoints;
+    public List<string> notesText;
+    //private string[] notesText;
+
+    bool isRedacting = false;
+    public static int currentPoint = 0;
+    public static int numberOfClickedButton = 0;
+
+    public void SetClickedButton(int number)
+    {
+        Debug.Log(number);
+        numberOfClickedButton = number;
+    }
+
+    /*
     public class Note
     {
-        public GameObject point;
+        public GameObject point { get; private set; }
         public string description;
 
         public Note()
         {
-            description = string.Empty;
+            description = "exe3228";
         }
 
         public void SetPoint(GameObject dot)
         {
             point = dot;
         }
-
-        public void SetDescription(string text)
-        {
-            description = text;
-        }
     }
-
+    */
 
     // Start is called before the first frame update
+
     void Start()
     {
-        notePoints = new Note[100];
+        initNotes();
+        descriptionField = GameObject.Find("DescriptionField");
+        inputField = descriptionField.gameObject.GetComponent<TMP_InputField>();
+    }
+
+    public void initNotes()
+    {
+        notePoints = new List<GameObject>();
+        notesText = new List<string>();
     }
 
     // Update is called once per frame
@@ -63,43 +82,76 @@ public class AddNotes : MonoBehaviour
                 PlaceNotePoint(position);
             }
         }
-        if (Input.GetKeyDown(KeyCode.Delete) && transform.gameObject.tag != "Button") 
+        if (Input.GetKeyDown(KeyCode.Delete) && transform.gameObject.tag != "Button")
         {
             DestroyPoints();
         }
     }
 
+    int timer = -1;
+    private void FixedUpdate()
+    {
+        if (transform.gameObject.tag != "Button" & timer >= 10 & !isRedacting)
+        {
+            try
+            {
+                inputField.text = notesText[numberOfClickedButton];
+            } catch
+            {
+                inputField.text = "";
+            }
+        }
+        if (timer >= 10) timer = -1;
+        timer += 1;
+    }
+
     public void ShowHideDescriptionField()
     {
-        gameObject.SetActive(true);
-        TMP_InputField inputField = descriptionField.gameObject.GetComponent<TMP_InputField>();
-        inputField.text = "Leeeroy";
+        Debug.Log(transform.gameObject.name);
+        numberOfClickedButton = int.Parse(transform.gameObject.name);
+        //Надеюсь это никто не увидит...
+        transform.gameObject.GetComponentInParent<AddNotes>().SetClickedButton(numberOfClickedButton);
+    }
+
+    public void OnStartRedaction()
+    {
+        isRedacting = !isRedacting;
+    }
+
+    public void SetDescriptionIntoNote()
+    {
+        if (inputField.text != "")
+        {
+            string desc = inputField.text;
+            notesText[numberOfClickedButton] = desc;
+            Debug.Log("" + notesText[numberOfClickedButton]);
+        }
     }
 
     private void PlaceNotePoint(Vector3 clickCoords)
     {
         GameObject obj = Instantiate(notePoint, clickCoords, new Quaternion());
-        notePoints[currentPoint] = new Note();
-        notePoints[currentPoint].SetPoint(obj);
+        obj.transform.parent = transform;
+        obj.name = "" + currentPoint;
+        notePoints.Add(obj);
+        notesText.Add("Text");
         currentPoint = CountPoints();
+        Debug.Log(CountPoints());
     }
 
     private int CountPoints()
     {
-        int counter = 0;
-        while (notePoints[counter] != null) counter += 1;
-        return counter;
+        return notePoints.Count;
     }
 
     private void DestroyPoints()
     {
-        int counter = 0;
-        while (notePoints[counter] != null)
+        foreach (GameObject obj in notePoints)
         {
-            Destroy(notePoints[counter].point.gameObject);
-            counter += 1;
+            Destroy(obj);
         }
-        notePoints = new Note[100];
+        initNotes();
         currentPoint = 0;
+        numberOfClickedButton = 0;
     }
 }

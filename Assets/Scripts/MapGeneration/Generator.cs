@@ -242,11 +242,13 @@ public abstract class Generator : MonoBehaviour {
         SaveImageFromTexture(tex2D);
     }
 
-    public void SetMapSize()
+	public void SetMapSize()
 	{
-        int size = int.Parse(MapSizeField.text);
-		Width = size;
-		Height = size;
+		if (MapSizeField.text != "") {
+			int size = int.Parse(MapSizeField.text);
+			Width = size;
+			Height = size;
+		}
 	}
 
     private void SaveImageFromTexture(Texture2D texture)

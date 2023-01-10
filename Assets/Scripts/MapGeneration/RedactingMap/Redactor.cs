@@ -6,11 +6,15 @@ public class Redactor : MonoBehaviour
     public MeshRenderer mapTexture;
     public GameObject curColor;
 
-    private float RedColor = 1;
+    private float RedColor = 0;
     private float GreenColor = 0;
     private float BlueColor = 0;
 
 
+    void Start()
+    {
+        UpdateColor();
+    }
     public void Update()
     {
         if (Input.GetMouseButton(1)) 
@@ -29,8 +33,7 @@ public class Redactor : MonoBehaviour
                     Vector2 position = new Vector2(pixelUV.x, pixelUV.y);
 
                     Debug.Log("Drawing: " + (int)position.x + " / " + (int)position.y);
-                    Color color = new Color(RedColor, GreenColor, BlueColor);
-                    texture.SetPixel((int)position.x, (int)position.y, color);
+                    texture.SetPixel((int)position.x, (int)position.y, curColor.GetComponent<Image>().color);
                     texture.Apply();
                 }
             }
@@ -62,7 +65,7 @@ public class Redactor : MonoBehaviour
         }
     }
 
-    public void GetColour(GameObject slide)
+    public void SetColor(GameObject slide)
     {
         switch (slide.name)
         {
@@ -81,8 +84,6 @@ public class Redactor : MonoBehaviour
 
     private void UpdateColor()
     {
-        Debug.Log(RedColor + "/" + GreenColor + "/" + BlueColor);
-
         curColor.GetComponent<Image>().color = new Color(RedColor, GreenColor, BlueColor);
     }
 

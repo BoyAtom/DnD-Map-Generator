@@ -820,7 +820,7 @@ GameObject:
   m_Component:
   - component: {fileID: 289307689}
   m_Layer: 5
-  m_Name: Colours
+  m_Name: Colors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1622,7 +1622,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1288015010}
         m_TargetAssemblyTypeName: Redactor, Assembly-CSharp
-        m_MethodName: GetColour
+        m_MethodName: SetColor
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 557139769}
@@ -1644,7 +1644,7 @@ GameObject:
   - component: {fileID: 631658522}
   - component: {fileID: 631658521}
   m_Layer: 5
-  m_Name: CurentColour
+  m_Name: CurentColor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2238,7 +2238,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1288015010}
         m_TargetAssemblyTypeName: Redactor, Assembly-CSharp
-        m_MethodName: GetColour
+        m_MethodName: SetColor
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 961809392}
@@ -2378,7 +2378,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1288015010}
         m_TargetAssemblyTypeName: Redactor, Assembly-CSharp
-        m_MethodName: GetColour
+        m_MethodName: SetColor
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 988180752}

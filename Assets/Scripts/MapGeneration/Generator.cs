@@ -254,12 +254,16 @@ public abstract class Generator : MonoBehaviour {
     private void SaveImageFromTexture(Texture2D texture)
     {
         byte[] bytes = texture.EncodeToPNG();
-        var dirPath = Application.dataPath + "/RenderOutput";
-        if (!System.IO.Directory.Exists(dirPath))
-        {
-            System.IO.Directory.CreateDirectory(dirPath);
-        }
-        System.IO.File.WriteAllBytes(dirPath + "/Seed_" + Seed + ".png", bytes);
+        var dirPath = Application.dataPath + "/GeneratedMaps";
+
+        if (!System.IO.Directory.Exists(dirPath)) System.IO.Directory.CreateDirectory(dirPath);
+		dirPath += "/MapSeed_"+Seed;
+        if (!System.IO.Directory.Exists(dirPath)) System.IO.Directory.CreateDirectory(dirPath);
+
+		List<GameObject> noteP = GameObject.Find("Buttons").GetComponent<AddNotes>().notePoints;
+		List<string> noteT = GameObject.Find("Buttons").GetComponent<AddNotes>().notesText;
+		
+        System.IO.File.WriteAllBytes(dirPath + "/Map.png", bytes);
         Debug.Log(bytes.Length / 1024 + "Kb was saved as: " + dirPath);
     }
 

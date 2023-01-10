@@ -1,8 +1,15 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Redactor : MonoBehaviour
 {
     public MeshRenderer mapTexture;
+    public GameObject curColor;
+
+    private float RedColor = 1;
+    private float GreenColor = 0;
+    private float BlueColor = 0;
+
 
     public void Update()
     {
@@ -22,7 +29,8 @@ public class Redactor : MonoBehaviour
                     Vector2 position = new Vector2(pixelUV.x, pixelUV.y);
 
                     Debug.Log("Drawing: " + (int)position.x + " / " + (int)position.y);
-                    texture.SetPixel((int)position.x, (int)position.y, Color.red);
+                    Color color = new Color(RedColor, GreenColor, BlueColor);
+                    texture.SetPixel((int)position.x, (int)position.y, color);
                     texture.Apply();
                 }
             }
@@ -52,6 +60,30 @@ public class Redactor : MonoBehaviour
             }
             */
         }
+    }
+
+    public void GetColour(GameObject slide)
+    {
+        switch (slide.name)
+        {
+            case "Red":
+                RedColor = slide.GetComponent<Slider>().value;
+                break;
+            case "Green":
+                GreenColor = slide.GetComponent<Slider>().value;
+                break;
+            case "Blue":
+                BlueColor = slide.GetComponent<Slider>().value;
+                break;
+        }
+        UpdateColor();
+    }
+
+    private void UpdateColor()
+    {
+        Debug.Log(RedColor + "/" + GreenColor + "/" + BlueColor);
+
+        curColor.GetComponent<Image>().color = new Color(RedColor, GreenColor, BlueColor);
     }
 
     public static void SetPoint(Texture2D texture, int x, int y, Color color)
